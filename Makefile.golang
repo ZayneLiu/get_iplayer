@@ -1,0 +1,67 @@
+# Makefile for get_iplayer Go implementation
+
+.PHONY: build test clean run help install
+
+# Binary name
+BINARY_NAME=get_iplayer_go
+MAIN_PATH=.
+
+# Go parameters
+GOCMD=go
+GOBUILD=$(GOCMD) build
+GOCLEAN=$(GOCMD) clean
+GOTEST=$(GOCMD) test
+GOGET=$(GOCMD) get
+GOMOD=$(GOCMD) mod
+
+help: ## Show this help message
+	@echo "Available targets:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-15s %s\n", $$1, $$2}'
+
+build: ## Build the Go binary
+	$(GOBUILD) -o $(BINARY_NAME) $(MAIN_PATH)
+
+test: ## Run tests
+	$(GOTEST) -v ./...
+
+test-coverage: ## Run tests with coverage
+	$(GOTEST) -v -cover ./...
+
+clean: ## Clean build artifacts
+	$(GOCLEAN)
+	rm -f $(BINARY_NAME)
+
+run: build ## Build and run with demo arguments
+	./$(BINARY_NAME) --version
+	./$(BINARY_NAME) --help
+
+run-demo: build ## Run demonstration of functionality
+	@echo "=== get_iplayer Go Implementation Demo ==="
+	@echo ""
+	@echo "Version:"
+	./$(BINARY_NAME) --version
+	@echo ""
+	@echo "Basic search:"
+	./$(BINARY_NAME) "doctor who"
+	@echo ""
+	@echo "Long format search:"
+	./$(BINARY_NAME) --long "doctor"
+	@echo ""
+	@echo "PID download preparation:"
+	./$(BINARY_NAME) --pid=b01sc0wf
+	@echo ""
+	@echo "Index download preparation:"
+	./$(BINARY_NAME) --get 1 --subtitles
+
+tidy: ## Tidy go modules
+	$(GOMOD) tidy
+
+fmt: ## Format Go code
+	$(GOCMD) fmt ./...
+
+vet: ## Run go vet
+	$(GOCMD) vet ./...
+
+lint: fmt vet ## Run linting tools
+
+all: lint test build ## Run all checks and build

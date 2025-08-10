@@ -1,0 +1,26 @@
+# Go build artifacts
+get_iplayer_go
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Go test artifacts
+*.test
+*.out
+
+# Go module cache
+go.sum
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Config files (user-specific)
+.get_iplayer/
